@@ -1,0 +1,42 @@
+stages:
+
+  # ── Stage 1: Clean raw data ─────────────────────────────
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+      - data/raw/students.csv    # input: raw data
+      - src/prepare.py          # if script changes, re-run!
+    outs:
+      - data/processed/clean.csv
+
+  # ── Stage 2: Feature engineering ────────────────────────
+  featurize:
+    cmd: python src/featurize.py
+    deps:
+      - data/processed/clean.csv  # from prepare stage
+      - src/featurize.py
+    outs:
+      - data/processed/features.csv
+
+  # ── Stage 3: Train model ─────────────────────────────────
+  train:
+    cmd: python src/train.py
+    deps:
+      - data/processed/features.csv  # from featurize stage
+      - src/train.py
+    outs:
+      - models/model.pkl
+      - data/processed/X_test.csv
+      - data/processed/y_test.csv
+
+  # ── Stage 4: Evaluate model ──────────────────────────────
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - models/model.pkl          # from train stage
+      - data/processed/X_test.csv
+      - data/processed/y_test.csv
+      - src/evaluate.py
+    metrics:
+      - metrics/scores.json:
+          cache: false           # don't cache, just track

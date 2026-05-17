@@ -1,0 +1,82 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+    - path: data/raw/students.csv
+      hash: md5
+      md5: 83a88d2ec65bf496a73bb9adc4e9da16
+      size: 977
+    - path: src/prepare.py
+      hash: md5
+      md5: 229520daba49c74b984abb6ac91f2883
+      size: 879
+    outs:
+    - path: data/processed/clean.csv
+      hash: md5
+      md5: cf0dfddb02fe605fb0173a7e98c1429e
+      size: 825
+  featurize:
+    cmd: python src/featurize.py
+    deps:
+    - path: data/processed/clean.csv
+      hash: md5
+      md5: cf0dfddb02fe605fb0173a7e98c1429e
+      size: 825
+    - path: src/featurize.py
+      hash: md5
+      md5: fe0b4bd6ec8294115ef7fd3ca6e72319
+      size: 1034
+    outs:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 9e0a0c01a794753715795c5694e70a45
+      size: 1815
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 9e0a0c01a794753715795c5694e70a45
+      size: 1815
+    - path: src/train.py
+      hash: md5
+      md5: 5352a7c4bb2b78e12c22558a856a6e56
+      size: 1145
+    outs:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: 6b3e6049e5b6a1a272763680f69ae69a
+      size: 417
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3fe5e5c4fa6c346a19a5d942bc2daec9
+      size: 36
+    - path: models/model.pkl
+      hash: md5
+      md5: ac726f813ae5569d065820a0496a38d0
+      size: 120761
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: 6b3e6049e5b6a1a272763680f69ae69a
+      size: 417
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 3fe5e5c4fa6c346a19a5d942bc2daec9
+      size: 36
+    - path: models/model.pkl
+      hash: md5
+      md5: ac726f813ae5569d065820a0496a38d0
+      size: 120761
+    - path: src/evaluate.py
+      hash: md5
+      md5: 31cf58923f65529b8cbc3a32bdd4359f
+      size: 1268
+    outs:
+    - path: metrics/scores.json
+      hash: md5
+      md5: 74a32120f3b2baf94d2e51a67a954264
+      size: 87
