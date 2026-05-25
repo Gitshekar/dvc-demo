@@ -20,7 +20,7 @@ def train():
 
     # Train Random Forest
     model = RandomForestClassifier(
-        n_estimators=100,
+        n_estimators=150,
         max_depth=5,
         random_state=42
     )
